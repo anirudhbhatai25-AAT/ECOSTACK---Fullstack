@@ -1,0 +1,87 @@
+<div class="container">
+  <h2>ECOSTACK - Carbon & FinOps Analyzer</h2>
+
+  <!-- Control Controls Panel -->
+  <div class="control-panel">
+    <div class="form-group">
+      <label>Target Language:</label>
+      <select [(ngModel)]="selectedLanguage">
+        <option value="JAVA">Java (AST Parser)</option>
+        <option value="CPP">C++ (Lexical Guard)</option>
+        <option value="PYTHON">Python (Lexical Guard)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Target Execution Scale (Runs):</label>
+      <select [(ngModel)]="executionScale">
+        <option [value]="1000">1,000 Runs (Light Microservice)</option>
+        <option [value]="100000">100,000 Runs (Batch Job)</option>
+        <option [value]="1000000">1,000,000 Runs (Standard Cloud Scale)</option>
+        <option [value]="10000000">10,000,000 Runs (High Throughput API)</option>
+        <option [value]="100000000">100,000,000 Runs (Enterprise Gateway)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Source Code Input -->
+  <div class="editor-section">
+    <textarea [(ngModel)]="rawCode" placeholder="Paste source code snippet here..."></textarea>
+    <div style="margin-top: 10px;">
+      <button (click)="onExecuteAudit()" [disabled]="loading">
+        {{ loading ? 'Analyzing AST...' : 'Execute Green Audit' }}
+      </button>
+      
+      <!-- Delete Button next to primary action when report exists -->
+      <button *ngIf="report" (click)="onDeleteReport()" style="background-color: #e74c3c; margin-left: 10px; color: white;">
+        Delete Report
+      </button>
+    </div>
+  </div>
+
+  <!-- Audit Results Section -->
+  <div *ngIf="report" class="results-panel">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h3>Audit Metrics (ID: {{ report.id }})</h3>
+      
+      <!-- Update Action Button -->
+      <button (click)="onUpdateReport()" style="background-color: #f39c12; color: white; margin-bottom: 10px;">
+        Update Suggestion
+      </button>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <span class="label">CARBON EMISSIONS</span>
+        <span class="value">{{ report.carbonEmissions }}</span>
+      </div>
+
+      <div class="metric-card">
+        <span class="label">ESTIMATED COMPUTE COST</span>
+        <span class="value">{{ report.electricityCost }}</span>
+      </div>
+
+      <div class="metric-card">
+        <span class="label">AST LOOPS FOUND</span>
+        <span class="value">{{ report.loopsFound }}</span>
+      </div>
+
+      <div class="metric-card">
+        <span class="label">HEAP ALLOCATIONS</span>
+        <span class="value">{{ report.memoryAllocations }}</span>
+      </div>
+    </div>
+
+    <!-- Optimization Directives -->
+    <div class="suggestion-box">
+      <pre>{{ report.suggestion }}</pre>
+    </div>
+
+    <!-- Refactored Green Code Output Card -->
+    <div class="refactored-card" *ngIf="report.optimizedCode">
+      <h3>Refactored Green Code Recommendation</h3>
+      <p class="subtext">AST-guided optimization directives inserted automatically:</p>
+      <pre class="code-display"><code>{{ report.optimizedCode }}</code></pre>
+    </div>
+  </div>
+</div>
